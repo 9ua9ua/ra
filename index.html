@@ -1,0 +1,3098 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f4f0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="关系拼盘">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<meta name="description" content="关系拼盘：两个人对同一份清单各选一遍，对比共识与分歧。无需注册，答案在链接里。">
+<title>关系拼盘 · 双人问卷交叉对比</title>
+<style>:root {
+  --ink: #1b1a18;
+  --ink-2: #574f45;
+  --muted: #8b857c;
+  --muted-2: #a8a199;
+  --paper: #f6f4f0;
+  --line: #ece7df;
+  --card: #ffffff;
+  --green: #2f8f5b;
+  --teal: #22806b;
+  --amber: #d69a24;
+  --blue: #4a7ec0;
+  --purple: #7a5aa8;
+  --red: #c0453f;
+  --slate: #7c8894;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei",
+    "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100vh;
+}
+
+.serif {
+  font-family: "Songti SC", "SimSun", Georgia, serif;
+}
+
+#app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 20px calc(28px + env(safe-area-inset-bottom));
+}
+
+/* ---------- 通用 ---------- */
+.kicker {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #b0a99f;
+  text-transform: uppercase;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(27, 26, 24, 0.06);
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  border: 0;
+  border-radius: 14px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+}
+
+.btn:active {
+  opacity: 0.75;
+}
+
+.btn.off {
+  background: #dcd7ce;
+  cursor: default;
+}
+
+.btn.ghost {
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.tiny {
+  font-size: 12px;
+  color: var(--muted-2);
+  line-height: 1.7;
+}
+
+/* ---------- 首页 ---------- */
+.hero {
+  padding: 42px 4px 26px;
+}
+
+.hero h1 {
+  margin: 12px 0 0;
+  font-size: 38px;
+  line-height: 1.16;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.hero p {
+  margin: 14px 0 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #7d776e;
+}
+
+.start {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 20px;
+  background: var(--ink);
+  border: 0;
+  border-radius: 16px;
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.start-title {
+  display: block;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.start-sub {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  color: #a8a29a;
+}
+
+.start-arrow {
+  font-size: 20px;
+}
+
+.join-row {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+}
+
+.join-row input {
+  flex: 1;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--ink);
+}
+
+.join-row button {
+  width: 78px;
+  height: 46px;
+  border: 0;
+  border-radius: 12px;
+  background: #f4f0e9;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.howto {
+  margin-top: 34px;
+}
+
+.howto-title {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--muted-2);
+  margin-bottom: 12px;
+}
+
+.howto-item {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #6f6961;
+}
+
+.howto-item i {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  border-radius: 50%;
+  background: #eae5dd;
+  color: #8b857c;
+  font-size: 10px;
+  font-style: normal;
+  text-align: center;
+  line-height: 18px;
+}
+
+.credit {
+  margin-top: 38px;
+  padding-top: 16px;
+  border-top: 1px solid #ebe6de;
+  font-size: 10px;
+  line-height: 1.9;
+  color: #b3aca2;
+}
+
+/* ---------- 选题 ---------- */
+.page-head {
+  padding: 28px 4px 16px;
+}
+
+.page-head h2 {
+  margin: 0;
+  font-size: 27px;
+  font-weight: 600;
+}
+
+.page-head p {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #7d776e;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.toolbar button {
+  border: 0;
+  background: #eae5dd;
+  border-radius: 99px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.list {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(27, 26, 24, 0.06);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 13px 14px;
+  border: 0;
+  border-bottom: 1px solid #f3efea;
+  background: #fff;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.row:last-child {
+  border-bottom: 0;
+}
+
+.row.on {
+  background: #fbfaf7;
+}
+
+.box {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ddd6cb;
+  border-radius: 6px;
+  position: relative;
+}
+
+.row.on .box {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.row.on .box::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 5px;
+  width: 6px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(40deg);
+}
+
+.row-main {
+  flex: 1;
+  padding-left: 12px;
+}
+
+.row-title {
+  display: block;
+  font-size: 15px;
+}
+
+.row-sub {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--muted-2);
+}
+
+.footer-fixed {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+  background: rgba(246, 244, 240, 0.96);
+  backdrop-filter: blur(6px);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ---------- 答题 ---------- */
+.answer-top {
+  padding: 22px 4px 0;
+}
+
+.progress {
+  height: 4px;
+  background: #e7e2d9;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progress > div {
+  height: 4px;
+  background: var(--ink);
+  border-radius: 99px;
+  transition: width 0.2s;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 11px;
+  color: #9b948a;
+}
+
+.meta .who {
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #eae5dd;
+  color: #6f6961;
+}
+
+.saved {
+  margin-top: 6px;
+  height: 14px;
+  text-align: right;
+  font-size: 10px;
+  color: #b3aca2;
+}
+
+.saved .on {
+  color: var(--green);
+}
+
+.qcard {
+  margin-top: 16px;
+  padding: 22px 18px 18px;
+}
+
+.q-no {
+  font-size: 11px;
+  color: #b0a99f;
+}
+
+.q-text {
+  margin-top: 10px;
+  font-size: 23px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.q-hint {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--muted-2);
+}
+
+.opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.opt {
+  width: calc(50% - 4px);
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.opt .dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 7px;
+  vertical-align: middle;
+}
+
+.opt .label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.opt .sub {
+  margin-top: 4px;
+  padding-left: 13px;
+  font-size: 10.5px;
+  color: var(--muted-2);
+}
+
+.opt.on {
+  border-color: transparent;
+}
+
+.opt.on .label,
+.opt.on .sub {
+  color: inherit;
+}
+
+.nav {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.nav button {
+  flex: 1;
+  height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(27, 26, 24, 0.05);
+  font-size: 13.5px;
+  font-family: inherit;
+  color: #6f6961;
+  cursor: pointer;
+}
+
+.nav button.strong {
+  background: var(--ink);
+  color: #fff;
+}
+
+/* 档位底色 */
+.t-green { background: #e7f4ec; color: #1f7a4d; }
+.t-teal { background: #e2f0eb; color: #176a58; }
+.t-amber { background: #fbf0d8; color: #96660f; }
+.t-blue { background: #e8eff9; color: #33598f; }
+.t-purple { background: #efeaf7; color: #5c4691; }
+.t-red { background: #fbe8e5; color: #a83c32; }
+.t-slate { background: #e9edf1; color: #55606b; }
+
+.f-green { background: var(--green); }
+.f-teal { background: var(--teal); }
+.f-amber { background: var(--amber); }
+.f-blue { background: var(--blue); }
+.f-purple { background: var(--purple); }
+.f-red { background: var(--red); }
+.f-slate { background: var(--slate); }
+
+/* ---------- 分享 ---------- */
+.share-box {
+  margin-top: 18px;
+  padding: 18px;
+}
+
+.share-box h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
+.share-box code,
+.share-box textarea,
+.share-box input {
+  display: block;
+  width: 100%;
+  min-height: 84px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fbfaf7;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #574f45;
+  word-break: break-all;
+  resize: vertical;
+}
+
+.share-box input {
+  min-height: 0;
+  height: 42px;
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.share-meta {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--muted-2);
+}
+
+/* ---------- 结果 ---------- */
+.result-hero {
+  padding: 34px 4px 12px;
+}
+
+.rate {
+  margin-top: 8px;
+  font-size: 66px;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -1px;
+}
+
+.rate span {
+  font-size: 24px;
+  font-weight: 500;
+  margin-left: 3px;
+}
+
+.hero-sub {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #948d84;
+}
+
+.headline {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 6px 12px;
+  border-radius: 99px;
+  background: #eae5dd;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+
+.dist {
+  margin-top: 18px;
+  padding: 14px;
+}
+
+.dist-bar {
+  display: flex;
+  height: 12px;
+  border-radius: 99px;
+  overflow: hidden;
+  background: #f2efe9;
+}
+
+.dist-bar > div {
+  height: 12px;
+}
+
+.dist-legend {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.lg {
+  display: flex;
+  align-items: center;
+  width: 50%;
+  padding: 3px 0;
+  font-size: 11.5px;
+  color: #6f6961;
+}
+
+.lg i {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  margin-right: 5px;
+  flex: none;
+}
+
+.lg b {
+  margin-left: auto;
+  padding-right: 6px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.block {
+  margin-top: 28px;
+}
+
+.block-title {
+  font-size: 15px;
+  font-weight: 600;
+  padding: 0 4px;
+}
+
+.block-sub {
+  margin-top: 4px;
+  padding: 0 4px;
+  font-size: 11px;
+  color: var(--muted-2);
+}
+
+.mx {
+  margin-top: 11px;
+  padding: 10px;
+}
+
+.mx-head,
+.mx-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.mx-head > div,
+.mx-row > div {
+  flex: 1;
+  text-align: center;
+}
+
+.mx-corner,
+.mx-rowlabel {
+  flex: 0 0 32px !important;
+  font-size: 11px;
+  color: var(--muted-2);
+  line-height: 40px;
+}
+
+.mx-head > div {
+  font-size: 11px;
+  color: var(--muted-2);
+  line-height: 18px;
+}
+
+.mx-cell {
+  height: 40px;
+  line-height: 40px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #faf8f5;
+}
+
+.mx-cell.empty {
+  background: #faf8f5;
+}
+
+.mx-legend {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding: 0 4px;
+}
+
+.mx-legend > div {
+  display: flex;
+  align-items: center;
+  width: 33.33%;
+  padding: 3px 0;
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+.mx-legend i {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  margin-right: 4px;
+}
+
+.glist {
+  margin-top: 11px;
+  padding: 4px 14px;
+}
+
+.grow {
+  padding: 11px 0;
+  border-bottom: 1px solid #f3efea;
+}
+
+.grow:last-child {
+  border-bottom: 0;
+}
+
+.grow-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+}
+
+.grow-top b {
+  font-weight: 500;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.gbar {
+  margin-top: 7px;
+  height: 5px;
+  background: #f2efe9;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.gbar > div {
+  height: 5px;
+  background: var(--green);
+  border-radius: 99px;
+}
+
+.gmeta {
+  margin-top: 5px;
+  font-size: 10.5px;
+  color: var(--muted-2);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.chip {
+  padding: 6px 12px;
+  border-radius: 99px;
+  border: 1px solid #ebe6de;
+  background: #fff;
+  font-size: 11.5px;
+  color: #6f6961;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.chip.on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.chip em {
+  margin-left: 4px;
+  font-style: normal;
+  opacity: 0.6;
+}
+
+.list-meta {
+  margin: 8px 4px 0;
+  font-size: 11px;
+  color: var(--muted-2);
+}
+
+.sec-title {
+  margin: 16px 4px 8px;
+  font-size: 11px;
+  color: var(--muted-2);
+}
+
+.item {
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.item-text {
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.item-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 9px;
+  gap: 8px;
+}
+
+.picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.pick {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10.5px;
+}
+
+.pick span {
+  opacity: 0.62;
+}
+
+.pick b {
+  font-weight: 600;
+}
+
+.cat {
+  flex: none;
+  padding: 3px 9px;
+  border-radius: 99px;
+  font-size: 10.5px;
+}
+
+.more {
+  display: block;
+  width: 100%;
+  margin: 14px 0 4px;
+  height: 44px;
+  border: 1px dashed #ddd6cb;
+  border-radius: 12px;
+  background: #fff;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.more em {
+  margin-left: 6px;
+  font-style: normal;
+  font-size: 11px;
+  color: var(--muted-2);
+}
+
+.actions {
+  margin-top: 28px;
+}
+
+.actions .again {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  border: 0;
+  background: none;
+  font-size: 12.5px;
+  color: var(--muted);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.empty {
+  padding: 40px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted-2);
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  padding: 9px 16px;
+  border-radius: 10px;
+  background: rgba(27, 26, 24, 0.9);
+  color: #fff;
+  font-size: 12.5px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+  z-index: 9;
+}
+
+.toast.show {
+  opacity: 1;
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<noscript><div style="padding:40px;text-align:center">需要开启 JavaScript 才能使用。</div></noscript>
+<script>(function () {
+var __mods = {}, __cache = {};
+function __def(name, factory) { __mods[name] = factory; }
+function require(name) {
+  var key = String(name).replace(/^\.\//, '').replace(/\.js$/, '');
+  if (__cache[key]) return __cache[key].exports;
+  var mod = { exports: {} };
+  __cache[key] = mod;
+  __mods[key](mod, mod.exports, require);
+  return mod.exports;
+}
+__def("smorgasbord", function (module, exports, require) {
+/**
+ * 关系安那其主义自助拼盘（第 6 版）题库数据
+ *
+ * 由 data/smorgasbord-v6.json 自动生成，请勿手改本文件；
+ * 要改题库请改源 JSON 后重新生成。
+ *
+ * 数据仅转录原图的分组与条目名称。
+ */
+module.exports = {
+  "meta": {
+    "title": "关系安那其主义自助拼盘",
+    "subtitle": "用于协商的工具",
+    "version": "第 6 版",
+    "source": "Lyrica Lawrence & Heather Orr (Vancouver Polyamory, 2016, v1)；Maxx Hill 更新至 v6 (2022-07)；中文版翻译与整理：Oli / 黑巧、jeambo、eddyxx",
+    "license": "知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议",
+    "note": "本文件仅转录原图内容（分组与条目名称），未增删条目、未改写措辞。",
+    "groups": 28,
+    "items": 179
+  },
+  "groups": [
+    {
+      "id": "tech",
+      "title": "科技",
+      "items": [
+        "共享账号和会员",
+        "共享实体设备",
+        "密码"
+      ]
+    },
+    {
+      "id": "coparenting",
+      "title": "共同照护",
+      "items": [
+        "家人（生病、年长）",
+        "动物",
+        "植物",
+        "孩子",
+        "长期承诺"
+      ]
+    },
+    {
+      "id": "work",
+      "title": "职业 / 工作",
+      "items": [
+        "合作伙伴",
+        "同事",
+        "合伙创业",
+        "社交、协作与财务上的结合"
+      ]
+    },
+    {
+      "id": "exclusivity",
+      "title": "排他性",
+      "items": [
+        "性",
+        "情感",
+        "社交",
+        "结构性",
+        "浪漫",
+        "特定活动"
+      ]
+    },
+    {
+      "id": "emotional-support",
+      "title": "情感支持",
+      "items": [
+        "倾听",
+        "共情",
+        "出谋划策",
+        "保守秘密",
+        "不安全感与安抚"
+      ]
+    },
+    {
+      "id": "collaboration",
+      "title": "协作",
+      "items": [
+        "一起工作",
+        "项目合作",
+        "组织",
+        "互相教学",
+        "社团"
+      ]
+    },
+    {
+      "id": "topics-to-discuss",
+      "title": "需要讨论的事项",
+      "items": [
+        "高难度对话",
+        "安全与隐私",
+        "问责与担当",
+        "心理健康与创伤",
+        "重要边界"
+      ]
+    },
+    {
+      "id": "emotional-intimacy",
+      "title": "情感亲密",
+      "items": [
+        "展露脆弱",
+        "讨论价值观 / 信仰",
+        "高难度对话",
+        "爱的语言"
+      ]
+    },
+    {
+      "id": "partnership",
+      "title": "伙伴关系",
+      "items": [
+        "共同目标 / 价值观",
+        "日常习惯",
+        "拥抱变化",
+        "一致性",
+        "承诺",
+        "可靠性"
+      ]
+    },
+    {
+      "id": "physical-intimacy",
+      "title": "身体亲密",
+      "items": [
+        "拥抱",
+        "抚摸",
+        "按摩",
+        "依偎",
+        "跳舞",
+        "牵手",
+        "裸露",
+        "亲吻",
+        "同床共枕",
+        "肢体接触"
+      ]
+    },
+    {
+      "id": "public-affection",
+      "title": "公开表达亲密",
+      "items": [
+        "朋友",
+        "家人",
+        "职场",
+        "活动场合",
+        "公开程度",
+        "社交媒体",
+        "被看见一起出现"
+      ]
+    },
+    {
+      "id": "sex",
+      "title": "性",
+      "items": [
+        "高潮",
+        "抚摸",
+        "文爱",
+        "使用生殖器或肛门",
+        "语言性爱",
+        "安全措施",
+        "性传播疾病检测及其频率",
+        "性生活频率"
+      ]
+    },
+    {
+      "id": "legal",
+      "title": "法律",
+      "items": [
+        "收养",
+        "商业伙伴",
+        "婚姻",
+        "签代理授权书",
+        "民事伴侣关系",
+        "遗嘱执行人"
+      ]
+    },
+    {
+      "id": "creation",
+      "title": "创作",
+      "items": [
+        "视觉艺术",
+        "手工",
+        "评论反馈",
+        "音乐",
+        "瑜伽",
+        "武术",
+        "喜剧",
+        "杂技",
+        "舞蹈",
+        "戏剧",
+        "即兴表演"
+      ]
+    },
+    {
+      "id": "marginalization",
+      "title": "边缘化、特权、结盟与倡导",
+      "items": [
+        "种族",
+        "残障",
+        "性别",
+        "阶级",
+        "公民身份",
+        "宗教",
+        "体型",
+        "性倾向",
+        "外貌",
+        "神经多样性"
+      ]
+    },
+    {
+      "id": "romance",
+      "title": "浪漫",
+      "items": [
+        "情感吸引",
+        "共同经历",
+        "高度关注",
+        "培养彼此的独特性",
+        "没来由的欣喜",
+        "心动感（Crushes）"
+      ]
+    },
+    {
+      "id": "labels",
+      "title": "标签 / 称谓",
+      "items": [
+        "配偶",
+        "父母",
+        "表亲",
+        "爱称",
+        "兄弟姐妹",
+        "约会对象",
+        "自选的家人（Chosen family）",
+        "社交媒体官宣"
+      ]
+    },
+    {
+      "id": "time-together",
+      "title": "共度时光",
+      "items": [
+        "节日",
+        "生日",
+        "跑腿",
+        "约会",
+        "平行游戏",
+        "在家",
+        "频率",
+        "纪念日",
+        "时长"
+      ]
+    },
+    {
+      "id": "future-planning",
+      "title": "未来规划",
+      "items": [
+        "孩子",
+        "居住偏好",
+        "社群",
+        "关系持续时间",
+        "职业重要性"
+      ]
+    },
+    {
+      "id": "power-play",
+      "title": "权力互动与性癖",
+      "items": [
+        "捆绑",
+        "角色扮演",
+        "恋物",
+        "角色互换",
+        "感官刺激",
+        "支配与臣服",
+        "施虐与受虐"
+      ]
+    },
+    {
+      "id": "religion",
+      "title": "宗教 / 灵性",
+      "items": [
+        "共同的仪式 / 祈祷",
+        "共同的信仰",
+        "讨论",
+        "仪式",
+        "传统",
+        "魔法",
+        "占卜"
+      ]
+    },
+    {
+      "id": "companionship",
+      "title": "陪伴",
+      "items": [
+        "玩闹说笑",
+        "共同活动 / 兴趣",
+        "智识与哲思交流",
+        "友谊"
+      ]
+    },
+    {
+      "id": "power-hierarchy",
+      "title": "权力 / 等级",
+      "items": [
+        "职场上下级关系",
+        "资助与受助关系",
+        "师生关系",
+        "导师或向导"
+      ]
+    },
+    {
+      "id": "daily-life",
+      "title": "生活日常",
+      "items": [
+        "一起做饭",
+        "家务",
+        "一起吃饭",
+        "共享生活空间",
+        "共享睡眠空间",
+        "作息习惯"
+      ]
+    },
+    {
+      "id": "comm-frequency",
+      "title": "沟通频率",
+      "items": [
+        "每天",
+        "每周",
+        "每月",
+        "每年",
+        "不定期",
+        "彼此确认（Check-ins）",
+        "紧急情况"
+      ]
+    },
+    {
+      "id": "finance",
+      "title": "财务",
+      "items": [
+        "金钱",
+        "买单",
+        "互助",
+        "资产",
+        "财务责任",
+        "共享资源",
+        "经营生意"
+      ]
+    },
+    {
+      "id": "comm-channel",
+      "title": "沟通方式",
+      "items": [
+        "视频",
+        "电话",
+        "文字",
+        "手写",
+        "面谈",
+        "关系会议",
+        "文爱短信"
+      ]
+    },
+    {
+      "id": "care",
+      "title": "照护",
+      "items": [
+        "健康",
+        "可靠性",
+        "残障",
+        "经济支持",
+        "紧急情况",
+        "临终关怀/死亡",
+        "给予/接受照护"
+      ]
+    }
+  ]
+}
+
+});
+
+__def("packs", function (module, exports, require) {
+/**
+ * 题库访问层
+ *
+ * 数据本体在 utils/smorgasbord.js（由 data/smorgasbord-v6.json 生成），
+ * 这里只做"分组 → 题目"的整理与自定义题解析，不写死任何题目文字。
+ */
+
+const data = require('./smorgasbord')
+
+const CUSTOM_PACK_ID = 'custom'
+
+/** 每个分组转成一个可作答的"题集"：分组内每一条 = 一道题 */
+function toPack(group) {
+  return {
+    id: group.id,
+    title: group.title,
+    subtitle: group.items.length + ' 条',
+    count: group.items.length,
+    questions: group.items.slice()
+  }
+}
+
+const PACKS = (data.groups || []).map(toPack)
+
+function listPacks() {
+  return PACKS.map(function (p) {
+    return {
+      id: p.id,
+      title: p.title,
+      subtitle: p.subtitle,
+      count: p.count
+    }
+  })
+}
+
+function getPack(packId) {
+  return (
+    PACKS.filter(function (p) {
+      return p.id === packId
+    })[0] || null
+  )
+}
+
+/** 全部题目拍平（跨分组总览用） */
+function flatten() {
+  const out = []
+  PACKS.forEach(function (p) {
+    p.questions.forEach(function (q, i) {
+      out.push({
+        packId: p.id,
+        packTitle: p.title,
+        index: i,
+        text: q
+      })
+    })
+  })
+  return out
+}
+
+function totalItems() {
+  return PACKS.reduce(function (sum, p) {
+    return sum + p.count
+  }, 0)
+}
+
+/**
+ * 按分组 id 展开成题集，顺序固定跟随题库原顺序（不随勾选顺序变化）
+ * @param {string[]} groupIds
+ */
+function expandGroups(groupIds) {
+  const wanted = groupIds || []
+  return PACKS.filter(function (p) {
+    return wanted.indexOf(p.id) >= 0
+  }).map(function (p) {
+    return { id: p.id, title: p.title, items: p.questions.slice() }
+  })
+}
+
+/**
+ * 展开成扁平题目列表，每道题带稳定 key（groupId#序号），用于答案对齐
+ * @param {Array} groups [{id,title,items}]
+ */
+function buildQuestionList(groups) {
+  const out = []
+  ;(groups || []).forEach(function (g) {
+    ;(g.items || []).forEach(function (text, i) {
+      out.push({
+        groupId: g.id,
+        groupTitle: g.title,
+        index: i,
+        key: g.id + '#' + i,
+        text: text
+      })
+    })
+  })
+  return out
+}
+
+/** 把多行文本切成自定义题：忽略空行、去掉序号前缀、限长 */
+function parseCustomQuestions(text) {
+  return String(text || '')
+    .split(/\r?\n/)
+    .map(function (line) {
+      return line
+        .replace(/^\s*(?:\d+[.、)]|[-*•])\s*/, '')
+        .trim()
+    })
+    .filter(function (line) {
+      return line.length > 0
+    })
+    .map(function (line) {
+      return line.length > 60 ? line.slice(0, 60) + '…' : line
+    })
+    .slice(0, 40)
+}
+
+module.exports = {
+  CUSTOM_PACK_ID: CUSTOM_PACK_ID,
+  PACKS: PACKS,
+  listPacks: listPacks,
+  getPack: getPack,
+  expandGroups: expandGroups,
+  buildQuestionList: buildQuestionList,
+  flatten: flatten,
+  totalItems: totalItems,
+  parseCustomQuestions: parseCustomQuestions
+}
+
+});
+
+__def("options", function (module, exports, require) {
+/**
+ * 作答档位（默认档，来源：原图「建议标记方式」）
+ *
+ * 这 6 档不是一条等差数列，每档带一个语义轴（axis）：
+ *   in    = 接纳
+ *   maybe = 中立 / 看情况
+ *   later = 认可但延后
+ *   talk  = 有前提，需要谈
+ *   out   = 拒绝（硬性界限）
+ * 对比判定只依赖 axis，不依赖选项序号 —— 这样单题换一套选项也能算。
+ */
+
+const DEFAULT_OPTIONS = [
+  {
+    value: 0,
+    key: 'yes',
+    label: '同意',
+    sub: '可以，没问题',
+    short: '同',
+    axis: 'in',
+    tone: 'green'
+  },
+  {
+    value: 1,
+    key: 'need',
+    label: '必要',
+    sub: '对我很重要',
+    short: '必',
+    axis: 'in',
+    tone: 'teal'
+  },
+  {
+    value: 2,
+    key: 'maybe',
+    label: '也许',
+    sub: '不确定',
+    short: '许',
+    axis: 'maybe',
+    tone: 'amber'
+  },
+  {
+    value: 3,
+    key: 'future',
+    label: '未来可能',
+    sub: '现在不行，以后可以',
+    short: '未',
+    axis: 'later',
+    tone: 'blue'
+  },
+  {
+    value: 4,
+    key: 'discuss',
+    label: '需要讨论',
+    sub: '有条件，得谈',
+    short: '谈',
+    axis: 'talk',
+    tone: 'purple'
+  },
+  {
+    value: 5,
+    key: 'hard-no',
+    label: '绝对不行',
+    sub: '硬性界限',
+    short: '否',
+    axis: 'out',
+    tone: 'red'
+  }
+]
+
+/** 未作答的标记值 */
+const UNANSWERED = -1
+
+/** 取某道题适用的选项集（题目自带 options 时优先，实现"不固定档位"） */
+function forQuestion(question) {
+  if (question && question.options && question.options.length) return question.options
+  return DEFAULT_OPTIONS
+}
+
+function find(optionSet, value) {
+  const list = optionSet || DEFAULT_OPTIONS
+  for (let i = 0; i < list.length; i += 1) {
+    if (list[i].value === value) return list[i]
+  }
+  return null
+}
+
+function axisOf(optionSet, value) {
+  const opt = find(optionSet, value)
+  return opt ? opt.axis : null
+}
+
+function labelOf(optionSet, value) {
+  const opt = find(optionSet, value)
+  return opt ? opt.label : '未答'
+}
+
+function toneOf(optionSet, value) {
+  const opt = find(optionSet, value)
+  return opt ? opt.tone : 'mute'
+}
+
+function isAnswer(value) {
+  return typeof value === 'number' && value >= 0
+}
+
+module.exports = {
+  DEFAULT_OPTIONS: DEFAULT_OPTIONS,
+  UNANSWERED: UNANSWERED,
+  forQuestion: forQuestion,
+  find: find,
+  axisOf: axisOf,
+  labelOf: labelOf,
+  toneOf: toneOf,
+  isAnswer: isAnswer
+}
+
+});
+
+__def("stats", function (module, exports, require) {
+/**
+ * 交叉对比统计（纯函数，无小程序 API，可被 Node 直接测试）
+ *
+ * 输入：题目列表 + 两方的答案表（key -> 档位值）
+ * 输出：5 类结论、6x6 交叉矩阵、分组维度得分、逐题对照
+ */
+
+const options = require('./options')
+
+const CATEGORIES = {
+  agree_yes: { key: 'agree_yes', label: '一致接纳', tone: 'green', note: '两个人都可以' },
+  agree_no: { key: 'agree_no', label: '一致拒绝', tone: 'slate', note: '两个人都不要' },
+  timing: { key: 'timing', label: '步调不同', tone: 'blue', note: '一个现在行，一个想以后' },
+  discuss: { key: 'discuss', label: '需要谈', tone: 'amber', note: '有「也许」或「需要讨论」' },
+  conflict: { key: 'conflict', label: '硬性冲突', tone: 'red', note: '一个接纳，一个划了硬界限' },
+  unanswered: { key: 'unanswered', label: '未答', tone: 'mute', note: '还没答' }
+}
+
+const CATEGORY_ORDER = ['agree_yes', 'agree_no', 'timing', 'discuss', 'conflict']
+
+/**
+ * 判定一条题目上两人的关系
+ * @param {object} question 题目（用于取选项集）
+ * @param {number} a A 的档位
+ * @param {number} b B 的档位
+ */
+function classify(question, a, b) {
+  if (!options.isAnswer(a) || !options.isAnswer(b)) return 'unanswered'
+  const set = options.forQuestion(question)
+  const ax = options.axisOf(set, a)
+  const bx = options.axisOf(set, b)
+  if (!ax || !bx) return 'unanswered'
+
+  if (ax === 'in' && bx === 'in') return 'agree_yes'
+  if (ax === 'out' && bx === 'out') return 'agree_no'
+  if ((ax === 'in' && bx === 'out') || (ax === 'out' && bx === 'in')) return 'conflict'
+
+  const hard = function (x) {
+    return x === 'in' || x === 'out'
+  }
+  // 一方现在就要/现在就不，另一方说"以后可以" → 步调不同
+  if ((ax === 'later' && hard(bx)) || (bx === 'later' && hard(ax))) return 'timing'
+
+  return 'discuss'
+}
+
+function emptyCounts() {
+  return { agree_yes: 0, agree_no: 0, timing: 0, discuss: 0, conflict: 0, unanswered: 0 }
+}
+
+/**
+ * @param {Array} questions [{groupId, groupTitle, key, text}]
+ * @param {object} answersA { key: value }
+ * @param {object} answersB { key: value }
+ */
+function summarize(questions, answersA, answersB) {
+  const list = questions || []
+  const A = answersA || {}
+  const B = answersB || {}
+  const counts = emptyCounts()
+  const matrix = []
+  for (let i = 0; i < 6; i += 1) matrix.push([0, 0, 0, 0, 0, 0])
+
+  const groupMap = {}
+
+  list.forEach(function (q) {
+    const a = A[q.key]
+    const b = B[q.key]
+    const cat = classify(q, a, b)
+    counts[cat] += 1
+
+    if (options.isAnswer(a) && options.isAnswer(b) && matrix[a] && matrix[a][b] !== undefined) {
+      matrix[a][b] += 1
+    }
+
+    if (q.groupTitle) {
+      if (!groupMap[q.groupTitle]) {
+        groupMap[q.groupTitle] = { title: q.groupTitle, total: 0, answered: 0, counts: emptyCounts() }
+      }
+      const g = groupMap[q.groupTitle]
+      g.total += 1
+      g.counts[cat] += 1
+      if (cat !== 'unanswered') g.answered += 1
+    }
+  })
+
+  const total = list.length
+  const answered = total - counts.unanswered
+  const agree = counts.agree_yes + counts.agree_no
+  const rate = answered > 0 ? Math.round((agree / answered) * 100) : 0
+
+  const segments = CATEGORY_ORDER.map(function (key) {
+    return {
+      key: key,
+      label: CATEGORIES[key].label,
+      tone: CATEGORIES[key].tone,
+      count: counts[key],
+      pct: answered > 0 ? (counts[key] / answered) * 100 : 0
+    }
+  })
+
+  const groups = Object.keys(groupMap)
+    .map(function (k) {
+      const g = groupMap[k]
+      const ga = g.answered
+      const ok = g.counts.agree_yes + g.counts.agree_no
+      return {
+        title: g.title,
+        total: g.total,
+        answered: ga,
+        rate: ga > 0 ? Math.round((ok / ga) * 100) : 0,
+        conflict: g.counts.conflict,
+        discuss: g.counts.discuss,
+        timing: g.counts.timing
+      }
+    })
+    .sort(function (x, y) {
+      return x.rate - y.rate
+    })
+
+  return {
+    total: total,
+    answered: answered,
+    rate: rate,
+    agree: agree,
+    counts: counts,
+    matrix: matrix,
+    segments: segments,
+    groups: groups,
+    headline: headlineOf(answered, counts)
+  }
+}
+
+function headlineOf(answered, counts) {
+  if (answered === 0) return '还没有可比对的答案'
+  if (counts.conflict === 0 && counts.discuss === 0 && counts.timing === 0) return '高度合拍'
+  if (counts.conflict === 0 && counts.discuss <= 2) return '基本合拍，细节待谈'
+  if (counts.conflict === 0) return '没有硬冲突，但要谈的地方不少'
+  if (counts.conflict <= 2) return '大体一致，有几处硬碰硬'
+  return '分歧不小，值得好好聊一次'
+}
+
+/** 6x6 矩阵的渲染数据（行 = A 的档位，列 = B 的档位） */
+function matrixView(summary, optionSet) {
+  const set = optionSet || options.DEFAULT_OPTIONS
+  return set.map(function (rowOpt) {
+    return {
+      label: rowOpt.short,
+      fullLabel: rowOpt.label,
+      cells: set.map(function (colOpt) {
+        const count = summary.matrix[rowOpt.value] ? summary.matrix[rowOpt.value][colOpt.value] : 0
+        return {
+          count: count,
+          tone: CATEGORIES[classify(null, rowOpt.value, colOpt.value)].tone,
+          empty: count === 0
+        }
+      })
+    }
+  })
+}
+
+/** 逐题对照 */
+function rows(questions, answersA, answersB) {
+  const A = answersA || {}
+  const B = answersB || {}
+  return (questions || []).map(function (q, i) {
+    const a = A[q.key]
+    const b = B[q.key]
+    const cat = classify(q, a, b)
+    const set = options.forQuestion(q)
+    return {
+      index: i,
+      no: i + 1,
+      key: q.key,
+      text: q.text,
+      groupTitle: q.groupTitle,
+      aValue: a,
+      bValue: b,
+      aLabel: options.labelOf(set, a),
+      bLabel: options.labelOf(set, b),
+      aTone: options.toneOf(set, a),
+      bTone: options.toneOf(set, b),
+      category: cat,
+      catLabel: CATEGORIES[cat].label,
+      tone: CATEGORIES[cat].tone
+    }
+  })
+}
+
+module.exports = {
+  CATEGORIES: CATEGORIES,
+  CATEGORY_ORDER: CATEGORY_ORDER,
+  classify: classify,
+  summarize: summarize,
+  matrixView: matrixView,
+  rows: rows
+}
+
+});
+
+__def("session", function (module, exports, require) {
+/**
+ * 会话推导（纯函数，无小程序 API）
+ *
+ * 房间本身只存原始状态，这里负责回答：
+ *   - 这个人现在该答哪些题
+ *   - 两人共同的题单是什么
+ *   - 进度、是否都答完了
+ *
+ * 规则：发起人 A 先圈定分组范围，B 只能在 A 的范围内复选（可少选、不可加），
+ * 所以"两人题目同一份"= A 范围 ∩ B 复选。
+ */
+
+const packs = require('./packs')
+
+function scopeOf(room, who) {
+  if (!room || !room.scope) return []
+  const list = room.scope[who]
+  return Array.isArray(list) ? list : []
+}
+
+/** 两人共同的题单分组（B 还没选时，暂时等于 A 的范围） */
+function commonScope(room) {
+  const a = scopeOf(room, 'A')
+  if (!a.length) return []
+  const b = room.scope && room.scope.B
+  if (!Array.isArray(b)) return a
+  return a.filter(function (id) {
+    return b.indexOf(id) >= 0
+  })
+}
+
+/**
+ * 某人要作答的题
+ * A：自己圈的全部；B：与 A 的交集
+ */
+function questionsFor(room, who) {
+  const ids = who === 'B' ? commonScope(room) : scopeOf(room, 'A')
+  return packs.buildQuestionList(packs.expandGroups(ids))
+}
+
+/** 两人共同题单（结果页用来对比） */
+function commonQuestions(room) {
+  return packs.buildQuestionList(packs.expandGroups(commonScope(room)))
+}
+
+function answersOf(room, who) {
+  if (!room || !room.answers) return {}
+  return room.answers[who] || {}
+}
+
+/** 某人已答数量 */
+function answeredCount(room, who) {
+  const answers = answersOf(room, who)
+  return questionsFor(room, who).filter(function (q) {
+    return typeof answers[q.key] === 'number' && answers[q.key] >= 0
+  }).length
+}
+
+function progressOf(room, who) {
+  const list = questionsFor(room, who)
+  if (!list.length) return 0
+  return Math.round((answeredCount(room, who) / list.length) * 100)
+}
+
+/** 某人是否已完成自己那份 */
+function isDone(room, who) {
+  const list = questionsFor(room, who)
+  if (!list.length) return false
+  const answers = answersOf(room, who)
+  return list.every(function (q) {
+    return typeof answers[q.key] === 'number' && answers[q.key] >= 0
+  })
+}
+
+/** 两人都交卷了（允许有未答条目） */
+function isFinished(room) {
+  if (!commonQuestions(room).length) return false
+  const sub = (room && room.submitted) || {}
+  return !!(sub.A && sub.B)
+}
+
+/** 可对比的条目数（两人都给了档位） */
+function comparableCount(room) {
+  const list = commonQuestions(room)
+  const a = answersOf(room, 'A')
+  const b = answersOf(room, 'B')
+  return list.filter(function (q) {
+    return (
+      typeof a[q.key] === 'number' &&
+      a[q.key] >= 0 &&
+      typeof b[q.key] === 'number' &&
+      b[q.key] >= 0
+    )
+  }).length
+}
+
+/** 首次未答的题号（答题页定位用） */
+function firstUnansweredIndex(room, who) {
+  const list = questionsFor(room, who)
+  const answers = answersOf(room, who)
+  for (let i = 0; i < list.length; i += 1) {
+    const v = answers[list[i].key]
+    if (!(typeof v === 'number' && v >= 0)) return i
+  }
+  return 0
+}
+
+/** 按分组切段，答题页按组展示 */
+function sectionsFor(room, who) {
+  const list = questionsFor(room, who)
+  const sections = []
+  let current = null
+  list.forEach(function (q, i) {
+    if (!current || current.title !== q.groupTitle) {
+      current = { title: q.groupTitle, groupId: q.groupId, start: i, items: [] }
+      sections.push(current)
+    }
+    current.items.push(q)
+  })
+  return sections
+}
+
+/**
+ * 房间卡片（「我的拼盘」列表用）：把 room 压成一行能显示的摘要
+ *
+ * 兼容两种 room 形状：
+ *   - 本地：answers 是完整答案表
+ *   - 云端列表：只有 counts:{A,B} 计数，没有完整答案（省流量）
+ */
+function roomCard(room) {
+  const sub = (room && room.submitted) || { A: 0, B: 0 }
+  const role = (room && room.role) || (sub.A ? 'B' : 'A')
+  const scopeA = scopeOf(room, 'A')
+  const scopeB = room && room.scope ? room.scope.B : null
+  const common = Array.isArray(scopeB)
+    ? scopeA.filter(function (id) {
+        return scopeB.indexOf(id) >= 0
+      })
+    : scopeA
+
+  const countItems = function (ids) {
+    return packs.expandGroups(ids).reduce(function (n, g) {
+      return n + g.items.length
+    }, 0)
+  }
+
+  const totalCommon = countItems(common)
+  const totalA = countItems(scopeA)
+
+  const counts = (room && room.counts) || {
+    A: Object.keys(answersOf(room, 'A')).length,
+    B: Object.keys(answersOf(room, 'B')).length
+  }
+
+  const mine = role === 'B' ? counts.B : counts.A
+  const other = role === 'B' ? counts.A : counts.B
+  const mineTotal = role === 'B' ? totalCommon : totalA
+  const otherTotal = role === 'B' ? totalA : totalCommon
+
+  let state = 'todo'
+  let stateText = '待我作答'
+  if (!totalCommon) {
+    state = 'empty'
+    stateText = '待对方选题'
+  } else if (sub.A && sub.B) {
+    state = 'done'
+    stateText = '可看结果'
+  } else if (sub[role]) {
+    state = 'waiting'
+    stateText = '等对方'
+  } else if (mine > 0) {
+    state = 'todo'
+    stateText = '继续作答'
+  }
+
+  // 本地模式两人共用一台手机，用「第一位 / 第二位」更准确
+  const localDone = counts.A + counts.B
+  const localTotal = totalA + totalCommon
+
+  return {
+    roomId: room._id || room.roomId,
+    code: room.code || '',
+    role: role,
+    local: room.mode === 'local',
+    groups: common.length,
+    total: totalCommon,
+    mine: mine,
+    mineTotal: mineTotal,
+    other: other,
+    otherTotal: otherTotal,
+    a: counts.A,
+    b: counts.B,
+    aTotal: totalA,
+    bTotal: totalCommon,
+    progress:
+      room.mode === 'local'
+        ? localTotal > 0
+          ? Math.round((localDone / localTotal) * 100)
+          : 0
+        : mineTotal > 0
+          ? Math.round((mine / mineTotal) * 100)
+          : 0,
+    state: state,
+    stateText: stateText,
+    updatedAt: room.updatedAt || room.createdAt || 0
+  }
+}
+
+module.exports = {
+  scopeOf: scopeOf,
+  commonScope: commonScope,
+  questionsFor: questionsFor,
+  commonQuestions: commonQuestions,
+  answersOf: answersOf,
+  answeredCount: answeredCount,
+  progressOf: progressOf,
+  isDone: isDone,
+  isFinished: isFinished,
+  comparableCount: comparableCount,
+  firstUnansweredIndex: firstUnansweredIndex,
+  sectionsFor: sectionsFor,
+  roomCard: roomCard
+}
+
+});
+
+__def("codec", function (module, exports, require) {
+/**
+ * 答案编解码：把一整份作答压进 URL
+ *
+ * 关键设计：**只编码被选中的条目**。
+ * 179 条全选才需要 68 字节/人；只选 2 个分组（10 条）时只要 4 字节/人，
+ * 链接从 195 字符缩到 20 来个字符 —— 手机上发微信、复制、念出来都轻松。
+ *
+ * 位布局（v2）
+ *   [0]       版本号 4 bit | 保留 4 bit
+ *   [1..4]    scopeA 位图（28 组，高位在前）
+ *   [5..8]    scopeB 位图
+ *   [9..]     A 的答案：仅 scopeA 内的条目，按题库顺序，每条 3 bit（7 = 未答）
+ *   [...]     B 的答案：仅「A∩B」内的条目，同样 3 bit
+ *
+ * 名字（可选）以 ~ 分隔追加在末尾，每段是 UTF-8 的 base64url：
+ *   基础数据 ~名字A ~名字B      （尾部空段省略）
+ */
+
+const VERSION = 2
+const BITS_PER_ANSWER = 3
+const UNANSWERED = 7
+const MAX_GROUP = 28
+const SEP = '~'
+
+/* ------------------------------ 字节/字符串 ------------------------------ */
+
+function toBytes(str) {
+  const b64 = String(str).replace(/-/g, '+').replace(/_/g, '/')
+  const pad = b64.length % 4 === 0 ? '' : '='.repeat(4 - (b64.length % 4))
+  let bin
+  if (typeof atob === 'function') {
+    bin = atob(b64 + pad)
+  } else {
+    bin = Buffer.from(b64 + pad, 'base64').toString('binary')
+  }
+  const out = []
+  for (let i = 0; i < bin.length; i += 1) out.push(bin.charCodeAt(i))
+  return out
+}
+
+function fromBytes(bytes) {
+  let bin = ''
+  for (let i = 0; i < bytes.length; i += 1) bin += String.fromCharCode(bytes[i])
+  let b64
+  if (typeof btoa === 'function') b64 = btoa(bin)
+  else b64 = Buffer.from(bin, 'binary').toString('base64')
+  return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+}
+
+function utf8ToBytes(str) {
+  if (typeof TextEncoder !== 'undefined') return Array.from(new TextEncoder().encode(str))
+  const bin = unescape(encodeURIComponent(str))
+  const out = []
+  for (let i = 0; i < bin.length; i += 1) out.push(bin.charCodeAt(i))
+  return out
+}
+
+function bytesToUtf8(bytes) {
+  if (typeof TextDecoder !== 'undefined') {
+    try {
+      return new TextDecoder('utf-8', { fatal: false }).decode(new Uint8Array(bytes))
+    } catch (err) {
+      /* 落到下面的兜底 */
+    }
+  }
+  try {
+    return decodeURIComponent(escape(String.fromCharCode.apply(null, bytes)))
+  } catch (err) {
+    return ''
+  }
+}
+
+/* -------------------------------- 位读写 -------------------------------- */
+
+function BitWriter() {
+  this.bits = []
+}
+BitWriter.prototype.write = function (value, count) {
+  for (let i = count - 1; i >= 0; i -= 1) this.bits.push((value >> i) & 1)
+}
+BitWriter.prototype.toBytes = function () {
+  const out = []
+  for (let i = 0; i < this.bits.length; i += 8) {
+    let byte = 0
+    for (let j = 0; j < 8; j += 1) byte = (byte << 1) | (this.bits[i + j] || 0)
+    out.push(byte)
+  }
+  return out
+}
+
+function ReadBits(bytes, offset) {
+  this.bytes = bytes
+  this.pos = (offset || 0) * 8
+}
+ReadBits.prototype.read = function (count) {
+  let value = 0
+  for (let i = 0; i < count; i += 1) {
+    const byteIndex = Math.floor(this.pos / 8)
+    const bitIndex = 7 - (this.pos % 8)
+    const bit = byteIndex < this.bytes.length ? (this.bytes[byteIndex] >> bitIndex) & 1 : 0
+    value = (value << 1) | bit
+    this.pos += 1
+  }
+  return value
+}
+
+/* -------------------------------- 位图 -------------------------------- */
+
+function packScope(ids, allIds) {
+  let mask = 0
+  ;(ids || []).forEach(function (id) {
+    const i = allIds.indexOf(id)
+    if (i >= 0 && i < MAX_GROUP) mask |= 1 << (MAX_GROUP - 1 - i)
+  })
+  return mask
+}
+
+function unpackScope(mask, allIds) {
+  const out = []
+  allIds.forEach(function (id, i) {
+    if (mask & (1 << (MAX_GROUP - 1 - i))) out.push(id)
+  })
+  return out
+}
+
+/* ------------------------------ 条目集合 ------------------------------ */
+
+/** 某几个分组下的条目，保持题库原顺序（编解码两端必须一致） */
+function itemsOf(scopeIds, schema) {
+  const set = {}
+  ;(scopeIds || []).forEach(function (id) {
+    set[id] = true
+  })
+  return schema.items.filter(function (q) {
+    return set[q.groupId]
+  })
+}
+
+function packAnswers(answers, items) {
+  const w = new BitWriter()
+  items.forEach(function (item) {
+    const v = answers ? answers[item.key] : undefined
+    w.write(typeof v === 'number' && v >= 0 && v <= 5 ? v : UNANSWERED, BITS_PER_ANSWER)
+  })
+  // 补到整字节，避免两个区块首尾粘连
+  while (w.bits.length % 8 !== 0) w.bits.push(0)
+  return w.toBytes()
+}
+
+function unpackAnswers(bytes, items, offsetBytes) {
+  const r = new ReadBits(bytes, offsetBytes)
+  const out = {}
+  items.forEach(function (item) {
+    const v = r.read(BITS_PER_ANSWER)
+    if (v !== UNANSWERED) out[item.key] = v
+  })
+  return out
+}
+
+function byteLen(itemCount) {
+  return Math.ceil((itemCount * BITS_PER_ANSWER) / 8)
+}
+
+/* -------------------------------- 对外 -------------------------------- */
+
+/**
+ * @param {{scopeA?:string[], scopeB?:string[], answersA?:object, answersB?:object,
+ *          names?:{A?:string,B?:string}}} payload
+ * @param {{allIds:string[], items:Array<{key:string,groupId:string}>}} schema
+ */
+function encode(payload, schema) {
+  const scopeA = payload.scopeA || []
+  const scopeB = payload.scopeB || []
+  const aItems = itemsOf(scopeA, schema)
+  const commonIds = scopeB.filter(function (id) {
+    return scopeA.indexOf(id) >= 0
+  })
+  const bItems = itemsOf(commonIds, schema)
+
+  const head = new BitWriter()
+  head.write(VERSION, 4)
+  head.write(0, 4)
+  const bytes = head.toBytes()
+
+  const pushMask = function (mask) {
+    bytes.push((mask >>> 24) & 0xff, (mask >>> 16) & 0xff, (mask >>> 8) & 0xff, mask & 0xff)
+  }
+  pushMask(packScope(scopeA, schema.allIds))
+  pushMask(packScope(scopeB, schema.allIds))
+
+  let out = fromBytes(bytes.concat(packAnswers(payload.answersA, aItems), packAnswers(payload.answersB, bItems)))
+
+  const names = payload.names || {}
+  if (names.A || names.B) {
+    const parts = [
+      out,
+      names.A ? fromBytes(utf8ToBytes(names.A)) : '',
+      names.B ? fromBytes(utf8ToBytes(names.B)) : ''
+    ]
+    while (parts.length > 1 && !parts[parts.length - 1]) parts.pop()
+    out = parts.join(SEP)
+  }
+  return out
+}
+
+/**
+ * @returns {{ok:boolean, version?:number, scopeA?:string[], scopeB?:string[],
+ *            answersA?:object, answersB?:object, names?:{A:string,B:string}, error?:string}}
+ */
+function decode(str, schema) {
+  try {
+    const raw = String(str || '')
+    const parts = raw.split(SEP)
+    const body = parts[0]
+    if (!body) return { ok: false, error: '内容是空的' }
+
+    const names = {
+      A: parts[1] ? bytesToUtf8(toBytes(parts[1])).slice(0, 20) : '',
+      B: parts[2] ? bytesToUtf8(toBytes(parts[2])).slice(0, 20) : ''
+    }
+
+    const bytes = toBytes(body)
+    if (bytes.length < 9) return { ok: false, error: '数据太短' }
+
+    const r = new ReadBits(bytes)
+    const version = r.read(4)
+    r.read(4)
+    if (version !== VERSION) return { ok: false, error: '数据版本不支持：' + version }
+
+    const maskA = ((bytes[1] << 24) | (bytes[2] << 16) | (bytes[3] << 8) | bytes[4]) >>> 0
+    const maskB = ((bytes[5] << 24) | (bytes[6] << 16) | (bytes[7] << 8) | bytes[8]) >>> 0
+
+    const scopeA = unpackScope(maskA, schema.allIds)
+    const scopeB = unpackScope(maskB, schema.allIds)
+    const aItems = itemsOf(scopeA, schema)
+    const bItems = itemsOf(
+      scopeB.filter(function (id) {
+        return scopeA.indexOf(id) >= 0
+      }),
+      schema
+    )
+
+    const aLen = byteLen(aItems.length)
+    const bLen = byteLen(bItems.length)
+    if (bytes.length < 9 + aLen + bLen) {
+      return { ok: false, error: '数据不完整（链接可能被截断）' }
+    }
+
+    return {
+      ok: true,
+      version: version,
+      scopeA: scopeA,
+      scopeB: scopeB,
+      answersA: unpackAnswers(bytes.slice(9), aItems, 0),
+      answersB: bLen ? unpackAnswers(bytes.slice(9 + aLen), bItems, 0) : {},
+      names: names
+    }
+  } catch (err) {
+    return { ok: false, error: (err && err.message) || '数据损坏' }
+  }
+}
+
+module.exports = {
+  VERSION: VERSION,
+  encode: encode,
+  decode: decode
+}
+
+});
+
+/* ---- app ---- */
+/* 网页版主程序：无后端，答案编码进链接 */
+const packs = require('packs')
+const options = require('options')
+const stats = require('stats')
+const session = require('session')
+const codec = require('codec')
+
+const KEY = 'ra_web_v1'
+const PAGE = 30
+
+const allIds = packs.listPacks().map(function (p) {
+  return p.id
+})
+const items = packs.buildQuestionList(packs.expandGroups(allIds))
+const schema = { allIds: allIds, items: items }
+
+const app = document.getElementById('app')
+let state = load()
+
+function blankState() {
+  return {
+    role: 'A',
+    scopeA: [],
+    scopeB: [],
+    answersA: {},
+    answersB: {},
+    subA: 0,
+    subB: 0,
+    idxA: 0,
+    idxB: 0,
+    filter: 'all',
+    limit: PAGE,
+    names: { A: '', B: '' }
+  }
+}
+
+function load() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(KEY))
+    if (raw && Array.isArray(raw.scopeA)) return Object.assign(blankState(), raw)
+  } catch (err) {
+    /* 忽略损坏的存档 */
+  }
+  return blankState()
+}
+
+function save() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(state))
+  } catch (err) {
+    /* 隐私模式下可能写不了，不影响使用 */
+  }
+}
+
+function reset() {
+  state = blankState()
+  save()
+  location.hash = '#/'
+}
+
+function room() {
+  return {
+    scope: { A: state.scopeA, B: state.scopeB.length ? state.scopeB : null },
+    answers: { A: state.answersA, B: state.answersB },
+    submitted: { A: state.subA, B: state.subB }
+  }
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+let toastTimer = null
+function toast(msg) {
+  const el = document.getElementById('toast')
+  if (!el) return
+  el.textContent = msg
+  el.classList.add('show')
+  if (toastTimer) clearTimeout(toastTimer)
+  toastTimer = setTimeout(function () {
+    el.classList.remove('show')
+  }, 1800)
+}
+
+function copyText(text) {
+  const done = function () {
+    toast('已复制')
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done, function () {
+      fallbackCopy(text, done)
+    })
+    return
+  }
+  fallbackCopy(text, done)
+}
+
+function fallbackCopy(text, done) {
+  const ta = document.createElement('textarea')
+  ta.value = text
+  ta.style.position = 'fixed'
+  ta.style.opacity = '0'
+  document.body.appendChild(ta)
+  ta.select()
+  try {
+    document.execCommand('copy')
+    done()
+  } catch (err) {
+    toast('复制失败，请手动长按选择')
+  }
+  document.body.removeChild(ta)
+}
+
+function makeLink(payload) {
+  const base = location.origin + location.pathname
+  if (location.protocol === 'file:') return ''
+  return base + '#/join?d=' + payload
+}
+
+/* ---------------------------------- 首页 ---------------------------------- */
+
+/** 回去改答案：清掉本方的「已交卷」，从第一题开始重过一遍（答案不丢） */
+function goEdit() {
+  if (state.role === 'B') {
+    state.subB = 0
+    state.idxB = 0
+  } else {
+    state.subA = 0
+    state.idxA = 0
+  }
+  save()
+  location.hash = '#/answer'
+}
+
+/** 关掉页面后再回来，应该落到哪一屏 */
+function resumeHash() {
+  const who = state.role === 'B' ? 'B' : 'A'
+  if (who === 'A') return state.subA ? '#/share' : '#/answer'
+  if (!state.scopeB.length) return '#/welcome'
+  return state.subB ? '#/result' : '#/answer'
+}
+
+function viewHome() {
+  const who = state.role === 'B' ? 'B' : 'A'
+  const list = session.questionsFor(room(), who)
+  const answers = who === 'B' ? state.answersB : state.answersA
+  const answered = list.filter(function (q) {
+    return typeof answers[q.key] === 'number'
+  }).length
+  const hasDraft = state.scopeA.length > 0
+
+  const draftBlock = hasDraft
+    ? '<button class="start" data-action="resume"><span><span class="start-title">继续上次的拼盘</span>' +
+      '<span class="start-sub">' + list.length + ' 条 · 已答 ' + answered + ' 条</span></span>' +
+      '<span class="start-arrow">→</span></button>' +
+      '<div style="margin-top:8px;text-align:center"><button class="chip" data-action="new">重新开始</button></div>'
+    : '<button class="start" data-action="start"><span><span class="start-title">开始一份拼盘</span>' +
+      '<span class="start-sub">你先圈定想聊的分组 · 28 组 179 条</span></span>' +
+      '<span class="start-arrow">→</span></button>'
+
+  app.innerHTML =
+    '<div class="hero">' +
+    '<div class="kicker">RELATIONSHIP ANARCHY SMORGASBORD</div>' +
+    '<h1 class="serif">关系拼盘</h1>' +
+    '<p>两个人对同一份清单各选一遍，看看哪些能对上、哪些得坐下来谈。</p>' +
+    '</div>' +
+    draftBlock +
+    '<div class="join-row">' +
+    '<input id="joinInput" placeholder="粘贴对方发来的链接或邀请码" autocomplete="off" />' +
+    '<button data-action="join">打开</button>' +
+    '</div>' +
+    '<div class="howto">' +
+    '<div class="howto-title">怎么用</div>' +
+    '<div class="howto-item"><i>1</i><span>你先勾选想聊的分组，答完会拿到一条链接</span></div>' +
+    '<div class="howto-item"><i>2</i><span>把链接发给对方，TA 在你勾的范围内再挑一遍</span></div>' +
+    '<div class="howto-item"><i>3</i><span>对方答完立刻看到对比；TA 把结果链接发回来，你也能看</span></div>' +
+    '<div class="howto-item"><i>4</i><span>全程不需要注册、不需要联网后台，答案就在链接里</span></div>' +
+    '</div>' +
+    '<div class="tiny" style="margin-top:18px;text-align:center">在微信里打不开？点右上角「…」→ 在浏览器中打开</div>' +
+    '<div class="credit">题库：《关系安那其主义自助拼盘》第 6 版 · 中文版翻译 Oli / 黑巧、jeambo、eddyxx · CC BY-NC-SA 4.0</div>'
+
+  bind('start', function () {
+    state = blankState()
+    state.role = 'A'
+    save()
+    location.hash = '#/pick'
+  })
+  bind('new', function () {
+    if (confirm('清空当前进度，重新开始？')) reset()
+  })
+  bind('resume', function () {
+    location.hash = resumeHash()
+  })
+  bind('join', function () {
+    const input = document.getElementById('joinInput')
+    const raw = (input && input.value || '').trim()
+    if (!raw) return toast('先粘贴链接或邀请码')
+    const m = /[?&]d=([^&\s#]+)/.exec(raw)
+    const payload = m ? m[1] : raw
+    enterPayload(payload)
+  })
+}
+
+/* ------------------------------ 受邀落地页 ------------------------------ */
+
+function viewWelcome() {
+  if (!state.scopeA.length) {
+    location.hash = '#/'
+    return
+  }
+  const groups = packs.expandGroups(state.scopeA)
+  const total = groups.reduce(function (n, g) {
+    return n + g.items.length
+  }, 0)
+  const mins = Math.max(1, Math.round((total * 8) / 60))
+  const who = state.names.A ? esc(state.names.A) : '有人'
+  const chips = groups
+    .map(function (g) {
+      return '<span class="chip" style="cursor:default">' + esc(g.title) + '</span>'
+    })
+    .join('')
+
+  app.innerHTML =
+    '<div class="hero">' +
+    '<div class="kicker">INVITATION</div>' +
+    '<h1 class="serif" style="font-size:30px">' + who + '想和你聊聊这些</h1>' +
+    '<p>TA 挑了 ' + groups.length + ' 个分组、共 ' + total + ' 条，估计 ' + mins + ' 分钟。<br>' +
+    '你看不到 TA 的答案，答完才会一起揭晓。</p>' +
+    '</div>' +
+    '<div class="chips" style="margin-top:0">' + chips + '</div>' +
+    '<button class="start" data-action="go" style="margin-top:22px">' +
+    '<span><span class="start-title">开始作答</span>' +
+    '<span class="start-sub">不用注册 · 不用下载 · 大约 ' + mins + ' 分钟</span></span>' +
+    '<span class="start-arrow">→</span></button>' +
+    '<div class="tiny" style="margin-top:16px;text-align:center">' +
+    '每答一条都会自动保存，随时可以关掉、下次接着答</div>'
+
+  bind('go', function () {
+    location.hash = '#/pick'
+  })
+}
+
+/* ---------------------------------- 选题 ---------------------------------- */
+
+function viewPick() {
+  const isB = state.role === 'B'
+  const base = isB ? state.scopeA : allIds
+  const pre = isB ? state.scopeB.length ? state.scopeB : base : state.scopeA
+  const picks = new Set(pre)
+
+  const groups = packs.listPacks().filter(function (g) {
+    return base.indexOf(g.id) >= 0
+  })
+
+  const rows = groups
+    .map(function (g) {
+      const on = picks.has(g.id)
+      return (
+        '<button class="row' + (on ? ' on' : '') + '" data-group="' + g.id + '">' +
+        '<span class="box"></span>' +
+        '<span class="row-main"><span class="row-title">' + esc(g.title) + '</span>' +
+        '<span class="row-sub">' + g.count + ' 条</span></span></button>'
+      )
+    })
+    .join('')
+
+  app.innerHTML =
+    '<div class="page-head">' +
+    '<h2 class="serif">' + (isB ? '挑你想聊的' : '先圈定范围') + '</h2>' +
+    '<p>' + (isB
+      ? '对方圈了 ' + state.scopeA.length + ' 个分组。你在这范围内挑，可以少挑，不能多挑。'
+      : '选中的分组会成为两人的共同题单，对方只能在你圈定的范围内再挑。') + '</p>' +
+    '</div>' +
+    '<div class="toolbar"><span id="count"></span><button data-action="all" id="allBtn"></button></div>' +
+    '<div class="list" id="list">' + rows + '</div>' +
+    '<div class="footer-fixed"><button class="btn" id="go" data-action="go"></button></div>'
+
+  function refresh() {
+    const n = groups.filter(function (g) {
+      return picks.has(g.id)
+    }).length
+    const total = groups.reduce(function (sum, g) {
+      return picks.has(g.id) ? sum + g.count : sum
+    }, 0)
+    document.getElementById('count').textContent = '已选 ' + n + ' 组 · ' + total + ' 条'
+    document.getElementById('allBtn').textContent = n === groups.length ? '全不选' : '全选'
+    const go = document.getElementById('go')
+    go.textContent = total > 0 ? '开始作答 · ' + total + ' 条' : '先选至少一个分组'
+    go.className = 'btn' + (total > 0 ? '' : ' off')
+  }
+
+  document.querySelectorAll('.row').forEach(function (el) {
+    el.addEventListener('click', function () {
+      const id = el.getAttribute('data-group')
+      if (picks.has(id)) picks.delete(id)
+      else picks.add(id)
+      el.classList.toggle('on')
+      refresh()
+    })
+  })
+
+  bind('all', function () {
+    const allOn = picks.size === groups.length
+    groups.forEach(function (g) {
+      if (allOn) picks.delete(g.id)
+      else picks.add(g.id)
+    })
+    document.querySelectorAll('.row').forEach(function (el) {
+      const id = el.getAttribute('data-group')
+      el.classList.toggle('on', picks.has(id))
+    })
+    refresh()
+  })
+
+  bind('go', function () {
+    if (!picks.size) return toast('至少选一个分组')
+    const ids = groups
+      .filter(function (g) {
+        return picks.has(g.id)
+      })
+      .map(function (g) {
+        return g.id
+      })
+    if (isB) {
+      state.scopeB = ids
+      state.idxB = 0
+    } else {
+      state.scopeA = ids
+      state.answersA = {}
+      state.idxA = 0
+      state.subA = 0
+    }
+    save()
+    location.hash = '#/answer'
+  })
+
+  refresh()
+}
+
+/* ---------------------------------- 答题 ---------------------------------- */
+
+function viewAnswer() {
+  const who = state.role
+  const isB = who === 'B'
+  if (isB && !state.scopeB.length) {
+    location.hash = '#/pick'
+    return
+  }
+  if (!isB && !state.scopeA.length) {
+    location.hash = '#/pick'
+    return
+  }
+
+  const list = session.questionsFor(room(), who)
+  if (!list.length) {
+    app.innerHTML = '<div class="empty">还没有题，先回去选分组</div>'
+    return
+  }
+
+  const key = isB ? 'idxB' : 'idxA'
+  let idx = Math.min(Math.max(state[key] || 0, 0), list.length - 1)
+  const answers = isB ? state.answersB : state.answersA
+  const q = list[idx]
+  const answered = list.filter(function (x) {
+    return typeof answers[x.key] === 'number'
+  }).length
+  const sameGroup = list.filter(function (x) {
+    return x.groupId === q.groupId
+  })
+  const posInGroup = sameGroup.findIndex(function (x) {
+    return x.key === q.key
+  }) + 1
+
+  const opts = options.DEFAULT_OPTIONS.map(function (o) {
+    const on = answers[q.key] === o.value
+    return (
+      '<button class="opt' + (on ? ' on t-' + o.tone : '') + '" data-value="' + o.value + '">' +
+      '<span class="dot f-' + o.tone + '"></span><span class="label">' + esc(o.label) + '</span>' +
+      '<span class="sub">' + esc(o.sub) + '</span></button>'
+    )
+  }).join('')
+
+  app.innerHTML =
+    '<div class="answer-top">' +
+    '<div class="progress"><div style="width:' + Math.round((answered / list.length) * 100) + '%"></div></div>' +
+    '<div class="meta"><span class="who">' + (isB ? 'TA' : '你') + '</span>' +
+    '<span>' + esc(q.groupTitle) + ' · ' + posInGroup + '/' + sameGroup.length + '</span>' +
+    '<span>' + answered + '/' + list.length + '</span></div>' +
+    '<div class="saved"><span class="on" id="saved"></span></div>' +
+    '</div>' +
+    '<div class="qcard card"><div class="q-no">第 ' + (idx + 1) + ' 条</div>' +
+    '<div class="q-text serif">' + esc(q.text) + '</div>' +
+    '<div class="q-hint">这一条，你的态度是</div></div>' +
+    '<div class="opts">' + opts + '</div>' +
+    '<div class="nav"><button data-action="prev">上一题</button>' +
+    '<button data-action="skip">跳过</button>' +
+    '<button data-action="finish" class="strong">交卷</button></div>'
+
+  function pickValue(v) {
+    answers[q.key] = v
+    state[key] = idx
+    save()
+    const saved = document.getElementById('saved')
+    if (saved) saved.textContent = '已保存'
+    setTimeout(function () {
+      if (idx < list.length - 1) {
+        state[key] = idx + 1
+        save()
+        render()
+      } else {
+        toast('这是最后一题')
+        render()
+      }
+    }, 130)
+  }
+
+  document.querySelectorAll('.opt').forEach(function (el) {
+    el.addEventListener('click', function () {
+      pickValue(Number(el.getAttribute('data-value')))
+    })
+  })
+
+  bind('prev', function () {
+    if (idx === 0) return toast('已经是第一题')
+    state[key] = idx - 1
+    save()
+    render()
+  })
+
+  bind('skip', function () {
+    if (idx >= list.length - 1) return toast('这是最后一题')
+    state[key] = idx + 1
+    save()
+    render()
+  })
+
+  bind('finish', function () {
+    const left = list.length - answered
+    if (left > 0 && !confirm('还有 ' + left + ' 条没答。没答的不会计入对比。现在交卷吗？')) return
+    if (isB) {
+      state.subB = Date.now()
+      save()
+      location.hash = '#/result'
+    } else {
+      state.subA = Date.now()
+      save()
+      location.hash = '#/share'
+    }
+  })
+}
+
+/* -------------------------------- 分享/回传 -------------------------------- */
+
+function sharePayload(mode) {
+  return codec.encode(
+    {
+      scopeA: state.scopeA,
+      scopeB: mode === 'both' ? state.scopeB : [],
+      answersA: state.answersA,
+      answersB: mode === 'both' ? state.answersB : {},
+      names: { A: state.names.A, B: mode === 'both' ? state.names.B : '' }
+    },
+    schema
+  )
+}
+
+function viewShare() {
+  const mode = /m=both/.test(location.hash) ? 'both' : 'a'
+
+  // 邀请码（mode 'a'）只属于发起人；第二人没有可发的邀请
+  if (mode === 'a' && state.role === 'B') {
+    location.hash = state.subB ? '#/result' : '#/answer'
+    return
+  }
+
+  let link = makeLink(sharePayload(mode))
+  const isFile = !link
+
+  const title = mode === 'both' ? '把结果发回给对方' : '把这条发给对方'
+  const sub =
+    mode === 'both'
+      ? '对方打开这条就能看到你们俩的对比结果，和你现在看到的一样。'
+      : '对方打开后，会在你选的分组范围内再挑一遍，然后各自作答。'
+
+  const nameField =
+    mode === 'a'
+      ? '<div class="share-box card"><h3>你的称呼（可选）</h3>' +
+        '<input id="nameA" maxlength="12" placeholder="让对方知道是谁发的" value="' +
+        esc(state.names.A || '') + '" />' +
+        '<div class="share-meta">填了之后，对方第一眼看到「' +
+        (state.names.A ? esc(state.names.A) : '你') + '想和你聊聊这些」</div></div>'
+      : ''
+
+  app.innerHTML =
+    '<div class="page-head"><h2 class="serif">' + title + '</h2><p>' + sub + '</p></div>' +
+    nameField +
+    (link
+      ? '<div class="share-box card"><h3>链接</h3><textarea readonly rows="2" id="linkBox">' + esc(link) + '</textarea>' +
+        '<div class="share-meta"><span id="linkLen">' + link.length + '</span> 字符 · 很短，直接发微信就行</div>' +
+        '<div style="margin-top:10px"><button class="btn" data-action="copyLink">复制链接</button></div></div>'
+      : '<div class="share-box card"><h3>当前是本地文件打开</h3>' +
+        '<div class="tiny">这个页面是用 file:// 打开的，没法直接生成可点开的链接。' +
+        '你可以把下面的「邀请码」发过去，让对方粘进首页输入框；' +
+        '或者把整个 HTML 放到任意静态托管（GitHub Pages、Vercel、自己的服务器）后再分享链接。</div></div>') +
+    '<div class="share-box card"><h3>邀请码（纯文本，一定能用）</h3>' +
+    '<textarea readonly rows="2" id="codeBox">' + esc(sharePayload(mode)) + '</textarea>' +
+    '<div class="share-meta"><span id="codeLen">' + sharePayload(mode).length + '</span> 字符 · 对方粘贴到首页输入框即可</div>' +
+    '<div style="margin-top:10px"><button class="btn ghost" data-action="copyCode">复制邀请码</button></div></div>' +
+    (mode === 'both'
+      ? '<div style="margin-top:14px"><button class="btn ghost" data-action="toResult">回到结果页</button></div>'
+      : '<div style="margin-top:14px;display:flex;gap:8px">' +
+        '<button class="btn ghost" data-action="editMine" style="flex:1">回去改答案</button>' +
+        '<button class="btn ghost" data-action="toResult" style="flex:1">先看看我自己的答案</button></div>')
+
+  const nameInput = document.getElementById('nameA')
+  if (nameInput) {
+    nameInput.addEventListener('input', function () {
+      state.names.A = nameInput.value.slice(0, 12)
+      save()
+      const next = sharePayload('a')
+      const lb = document.getElementById('linkBox')
+      const cb = document.getElementById('codeBox')
+      if (lb) {
+        lb.value = makeLink(next)
+        document.getElementById('linkLen').textContent = lb.value.length
+      }
+      if (cb) {
+        cb.value = next
+        document.getElementById('codeLen').textContent = next.length
+      }
+    })
+  }
+
+  bind('copyLink', function () {
+    const el = document.getElementById('linkBox')
+    if (el) copyText(el.value)
+  })
+  bind('copyCode', function () {
+    const el = document.getElementById('codeBox')
+    if (el) copyText(el.value)
+  })
+  bind('editMine', function () {
+    goEdit()
+  })
+  bind('toResult', function () {
+    location.hash = mode === 'both' ? '#/result' : '#/'
+  })
+  if (isFile) toast('本地打开：请用邀请码分享')
+}
+
+/* ---------------------------------- 结果 ---------------------------------- */
+
+function viewResult() {
+  const qs = session.commonQuestions(room())
+  if (!qs.length) {
+    app.innerHTML =
+      '<div class="page-head"><h2 class="serif">还没有结果</h2>' +
+      '<p>两个人的分组还没有交集，或者对方还没开始。</p></div>' +
+      '<button class="btn" data-action="back">回到首页</button>'
+    bind('back', function () {
+      location.hash = '#/'
+    })
+    return
+  }
+
+  const summary = stats.summarize(qs, state.answersA, state.answersB)
+  const isB = state.role === 'B'
+  const labelA = esc(state.names.A || (isB ? '对方' : '你'))
+  const labelB = esc(state.names.B || (isB ? '你' : '对方'))
+
+  const segs = summary.segments
+    .filter(function (s) {
+      return s.count > 0
+    })
+    .map(function (s) {
+      return '<div class="f-' + s.tone + '" style="width:' + s.pct.toFixed(2) + '%"></div>'
+    })
+    .join('')
+
+  const legend = summary.segments
+    .map(function (s) {
+      return (
+        '<div class="lg"><i class="f-' + s.tone + '"></i>' + s.label +
+        '<b>' + s.count + '</b></div>'
+      )
+    })
+    .join('')
+
+  const mv = stats.matrixView(summary)
+  const head =
+    '<div class="mx-head"><div class="mx-corner"></div>' +
+    mv.map(function (r) {
+      return '<div>' + r.label + '</div>'
+    }).join('') +
+    '</div>'
+  const mxRows = mv
+    .map(function (row) {
+      return (
+        '<div class="mx-row"><div class="mx-rowlabel">' + row.label + '</div>' +
+        row.cells
+          .map(function (c) {
+            return '<div class="mx-cell' + (c.empty ? ' empty' : ' t-' + c.tone) + '">' +
+              (c.empty ? '' : c.count) + '</div>'
+          })
+          .join('') +
+        '</div>'
+      )
+    })
+    .join('')
+
+  const groups = summary.groups
+    .slice(0, 4)
+    .map(function (g) {
+      return (
+        '<div class="grow"><div class="grow-top"><span>' + esc(g.title) + '</span><b>' + g.rate + '%</b></div>' +
+        '<div class="gbar"><div style="width:' + g.rate + '%"></div></div>' +
+        '<div class="gmeta">' + g.answered + '/' + g.total + ' 条可比对' +
+        (g.conflict > 0 ? ' · 冲突 ' + g.conflict : '') + '</div></div>'
+      )
+    })
+    .join('')
+
+  const chipDefs = [
+    { key: 'all', label: '全部', count: null },
+    { key: 'agree_yes', label: '一致接纳', count: summary.counts.agree_yes },
+    { key: 'agree_no', label: '一致拒绝', count: summary.counts.agree_no },
+    { key: 'conflict', label: '硬性冲突', count: summary.counts.conflict },
+    { key: 'discuss', label: '需要谈', count: summary.counts.discuss },
+    { key: 'timing', label: '步调不同', count: summary.counts.timing }
+  ]
+  const chips = chipDefs
+    .map(function (c) {
+      return (
+        '<button class="chip' + (state.filter === c.key ? ' on' : '') + '" data-filter="' + c.key + '">' +
+        c.label + (c.count === null ? '' : '<em>' + c.count + '</em>') + '</button>'
+      )
+    })
+    .join('')
+
+  const allRows = stats.rows(qs, state.answersA, state.answersB)
+  const filtered =
+    state.filter === 'all'
+      ? allRows
+      : allRows.filter(function (r) {
+          return r.category === state.filter
+        })
+  const shown = filtered.slice(0, state.limit)
+
+  let blocks = ''
+  let lastTitle = null
+  shown.forEach(function (r) {
+    if (r.groupTitle !== lastTitle) {
+      blocks += '<div class="sec-title">' + esc(r.groupTitle) + '</div>'
+      lastTitle = r.groupTitle
+    }
+    blocks +=
+      '<div class="item card"><div class="item-text">' + esc(r.text) + '</div>' +
+      '<div class="item-bottom"><div class="picks">' +
+      '<span class="pick t-' + r.aTone + '"><span>' + labelA + '</span><b>' + esc(r.aLabel) + '</b></span>' +
+      '<span class="pick t-' + r.bTone + '"><span>' + labelB + '</span><b>' + esc(r.bLabel) + '</b></span>' +
+      '</div><span class="cat t-' + r.tone + '">' + r.catLabel + '</span></div></div>'
+  })
+
+  const more =
+    filtered.length > shown.length
+      ? '<button class="more" data-action="more">显示更多<em>还有 ' + (filtered.length - shown.length) + ' 条</em></button>'
+      : ''
+
+  const shareBack = isB
+    ? '<div class="share-box card" style="margin-top:20px">' +
+      '<h3>把结果发给 ' + esc(state.names.A || '对方') + '</h3>' +
+      '<input id="nameB" maxlength="12" placeholder="你的称呼（可选）" value="' + esc(state.names.B || '') + '" />' +
+      '<div class="tiny" style="margin-top:8px">TA 现在只看得到自己的答案，需要这条链接才能看到对比。</div>' +
+      '<div style="margin-top:10px"><button class="btn" data-action="copyBack">复制回传链接</button></div>' +
+      '<div style="margin-top:8px;text-align:center"><button class="chip" data-action="toBackLink">查看完整链接</button></div>' +
+      '<div style="margin-top:8px;text-align:center"><button class="chip" data-action="editMine">答案填错了，回去改</button></div>' +
+      '</div>'
+    : ''
+
+  app.innerHTML =
+    '<div class="result-hero"><div class="kicker">AGREEMENT</div>' +
+    '<div class="rate serif">' + summary.rate + '<span>%</span></div>' +
+    '<div class="hero-sub">' + summary.answered + ' 条可比对 · 共 ' + summary.total + ' 条</div>' +
+    '<div class="headline">' + esc(summary.headline) + '</div></div>' +
+
+    '<div class="dist card"><div class="dist-bar">' + segs + '</div>' +
+    '<div class="dist-legend">' + legend + '</div></div>' +
+
+    '<div class="block"><div class="block-title">交叉矩阵</div>' +
+    '<div class="block-sub">行 = ' + labelA + '的答案，列 = ' + labelB + '的答案，数字是条目数</div>' +
+    '<div class="mx card">' + head + mxRows + '</div>' +
+    '<div class="mx-legend">' +
+    '<div><i class="f-green"></i>一致接纳</div><div><i class="f-slate"></i>一致拒绝</div>' +
+    '<div><i class="f-blue"></i>步调不同</div><div><i class="f-amber"></i>需要谈</div>' +
+    '<div><i class="f-red"></i>硬性冲突</div></div></div>' +
+
+    (groups
+      ? '<div class="block"><div class="block-title">分歧最大的分组</div>' +
+        '<div class="block-sub">按一致率从低到高</div><div class="glist card">' + groups + '</div></div>'
+      : '') +
+
+    '<div class="block"><div class="block-title">逐条对照</div>' +
+    '<div class="chips">' + chips + '</div>' +
+    '<div class="list-meta">共 ' + filtered.length + ' 条' +
+    (filtered.length > shown.length ? '，当前显示 ' + shown.length + ' 条' : '') + '</div>' +
+    blocks + more + '</div>' +
+
+    shareBack +
+    '<div class="actions"><button class="btn ghost" data-action="again">再来一份</button></div>'
+
+  document.querySelectorAll('[data-filter]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      state.filter = el.getAttribute('data-filter')
+      state.limit = PAGE
+      save()
+      render()
+    })
+  })
+
+  bind('more', function () {
+    state.limit += PAGE
+    save()
+    render()
+  })
+  bind('again', function () {
+    if (confirm('清空这次的数据，重新开始？')) reset()
+  })
+  bind('copyBack', function () {
+    const nm = document.getElementById('nameB')
+    if (nm) {
+      state.names.B = nm.value.slice(0, 12)
+      save()
+    }
+    const p = sharePayload('both')
+    copyText(makeLink(p) || p)
+  })
+  bind('toBackLink', function () {
+    const nm = document.getElementById('nameB')
+    if (nm) {
+      state.names.B = nm.value.slice(0, 12)
+      save()
+    }
+    location.hash = '#/share?m=both'
+  })
+  bind('editMine', function () {
+    goEdit()
+  })
+}
+
+/* --------------------------------- 路由 ---------------------------------- */
+
+function enterPayload(payload) {
+  const res = codec.decode(payload, schema)
+  if (!res.ok) {
+    toast('链接无效：' + (res.error || '无法解析'))
+    return
+  }
+  const hasB =
+    res.scopeB.length > 0 ||
+    Object.keys(res.answersB).length > 0
+
+  state.names = {
+    A: (res.names && res.names.A) || '',
+    B: (res.names && res.names.B) || ''
+  }
+
+  if (hasB) {
+    state.scopeA = res.scopeA
+    state.answersA = res.answersA
+    state.scopeB = res.scopeB
+    state.answersB = res.answersB
+    state.role = 'A'
+    state.subA = Date.now()
+    state.subB = Date.now()
+    state.filter = 'all'
+    state.limit = PAGE
+    save()
+    location.hash = '#/result'
+  } else if (res.scopeA.length) {
+    state.scopeA = res.scopeA
+    state.answersA = res.answersA
+    state.scopeB = []
+    state.answersB = {}
+    state.subA = 1
+    state.subB = 0
+    state.role = 'B'
+    state.idxB = 0
+    save()
+    location.hash = '#/welcome'
+  } else {
+    toast('这条链接里没有内容')
+  }
+}
+
+function bind(action, fn) {
+  document.querySelectorAll('[data-action="' + action + '"]').forEach(function (el) {
+    el.addEventListener('click', fn)
+  })
+}
+
+function render() {
+  const hash = location.hash || '#/'
+  if (hash.indexOf('#/join') === 0) {
+    const m = /[?&]d=([^&\s#]+)/.exec(hash)
+    if (m) {
+      enterPayload(m[1])
+      return
+    }
+    location.hash = '#/'
+    return
+  }
+  if (hash.indexOf('#/welcome') === 0) return viewWelcome()
+  if (hash.indexOf('#/pick') === 0) return viewPick()
+  if (hash.indexOf('#/answer') === 0) return viewAnswer()
+  if (hash.indexOf('#/share') === 0) return viewShare()
+  if (hash.indexOf('#/result') === 0) return viewResult()
+  return viewHome()
+}
+
+window.addEventListener('hashchange', render)
+render()
+
+})();
+</script>
+</body>
+</html>
